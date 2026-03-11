@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String   @map("password_hash")
+  isAdmin     Boolean  @default(false) @map("is_admin")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  books       Book[]
+}
+
+model Book {
+  id         String   @id @default(cuid())
+  bkTitle    String   @map("bk_title")
+  bkNumber   String   @map("bk_number")
+  stName     String   @map("st_name")
+  stNumber   String   @map("st_number")
+  stTaName   String   @map("st_ta_name")
+  stTaNumber String   @map("st_ta_number")
+  stSbCode   String   @map("st_sb_code")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  userId     String?  @map("user_id")
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
